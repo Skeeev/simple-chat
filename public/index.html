@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Chat</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.4/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+      .lead {
+        text-align: center;
+      }
+
+      .messages-list {
+        max-width: 600px;
+        max-height: 400px;
+        min-height: 400px;
+        overflow-y: auto;
+        margin: 0 auto;
+        padding: 0;
+        list-style: none;
+      }
+
+      .messages-list li {
+        position: relative;
+        margin-bottom: 15px;
+        padding-top: 15px;
+      }
+
+      .messages-list li:last-child {
+        margin-bottom: 0;
+      }
+
+      .messages-list li:before {
+        position: absolute;
+        top: 0;
+        left: 0;
+        content: 'Anonym';
+        color: #337ab7;
+        font: 700 1em sans-serif;
+      }
+
+      .form-inline {
+        display: flex;
+        max-width: 600px;
+        margin: 30px auto 0 auto;
+      }
+
+      .message-field {
+        width: 80%;
+        margin-right: 20px;
+      }
+    </style>
+  </head>
+  <body class="container">
+  <p class="lead">Welcome!</p>
+
+  <ul id="messages" class="messages-list"></ul>
+
+  <form id="publish" class="form-inline">
+    <input id="message-field" class="message-field" type="text" name="message"/>
+    <input type="submit" class="btn btn-primary" value="Send"/>
+  </form>
+
+  <script>
+    subscribe();
+    publish();
+
+    async function subscribe() {
+      const subscribeUrl = `/subscribe?r=${Math.random()}`;
+      const SUBSCRIBE_TIMEOUT = 500;
+
+      try {
+        messageHandler(
+          await fetch(subscribeUrl)
+        );
+      } catch {
+        setTimeout(subscribe, SUBSCRIBE_TIMEOUT);
+      }
+    }
+
+    async function messageHandler(message) {
+      const messagesList = document.getElementById('messages');
+      const newMessageListItem = document.createElement('li');
+
+      try {
+        newMessageListItem.textContent = await message.text();
+        messagesList.appendChild(newMessageListItem);
+
+        messagesList.scrollTop = messagesList.scrollHeight - messagesList.offsetHeight;
+      } catch (error) {
+        console.log(`Invalid chat message: ${error}`);
+      }
+
+      subscribe();
+    }
+
+    function publish() {
+      const form = document.getElementById('publish');
+
+      form.addEventListener('submit', formSubmitHandler);
+    }
+
+    function formSubmitHandler(event) {
+      const PUBLISH_URL = 'publish';
+      const messageField = document.getElementById('message-field');
+
+      fetch(PUBLISH_URL, {
+        method: 'POST',
+        headers: new Headers({
+          'content-type': 'application/json;charset=utf-8'
+        }),
+        body: JSON.stringify({
+          message: messageField.value
+        })
+      });
+
+      messageField.value = '';
+      messageField.focus();
+
+      event.preventDefault();
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,22 @@
+{
+  "name": "task-01",
+  "version": "1.0.0",
+  "description": "",
+  "main": "chat.js",
+  "scripts": {
+    "start": "nodemon ./index.js"
+  },
+  "author": "YS",
+  "license": "ISC",
+  "dependencies": {
+    "koa": "^2.5.0",
+    "koa-bodyparser": "^4.2.0",
+    "koa-favicon": "^2.0.0",
+    "koa-logger": "^3.1.0",
+    "koa-router": "^7.4.0",
+    "mz": "^2.7.0"
+  },
+  "devDependencies": {
+    "nodemon": "^1.18.10"
+  }
+}
