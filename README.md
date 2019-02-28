@@ -1,4 +1,4 @@
-Simple chat app
+Chat app
 
 Start:
 `npm run start`
